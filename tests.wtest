@@ -1,0 +1,46 @@
+import profesionales.*
+import universidades.*
+import empresas.*
+
+describe "Test Etapa 1" {
+    const sanMartin = new Universidad(provincia = "Buenos Aires", honorariosRecomendados = 3500)
+    const rosario = new Universidad(provincia = "Santa fe", honorariosRecomendados = 2800)
+    const corrientes = new Universidad(provincia = "Corrientes", honorariosRecomendados = 4200)
+    const hurlingham = new Universidad(provincia = "Buenos Aires", honorariosRecomendados = 8800)
+
+    const juana = new ProfesionalVinculado(universidad = rosario)
+    const melina = new ProfesionalLitoral(universidad = corrientes)
+    const rocio  = new ProfesionalLibre(universidad = hurlingham, honorarios = 5000, provincias = ["Santa Fe", "Cordoba", "Buenos Aires"])
+    const luciana = new ProfesionalLibre(universidad = rosario, honorarios = 3200, provincias = ["Santa Fe", "Entre Rios"])
+
+    const empresa1 = new Empresa(profesionalesContratados = [juana, melina, rocio, luciana], honorariosReferencia = 3500)
+
+  test "Dos de sus profesionales estudiaron en rosario, uno en Hurlingham y ninguno en San Martin" {
+    assert.equals(2, empresa1.profesionalesFormadosEn(rosario))
+    assert.equals(1, empresa1.profesionalesFormadosEn(hurlingham))
+    assert.equals(0, empresa1.profesionalesFormadosEn(sanMartin))
+  }
+
+  test "El unico profesional caro es Rocio" {
+    assert.equals(#{rocio}, empresa1.profesionalesCaros())
+  }
+
+  test "Universidades Formadoras son Rosario Corrientes y Hurlingham" {
+    assert.equals(#{rosario, corrientes, hurlingham}, empresa1.universidadesFormadoras())
+  }
+
+  test "El profesional mas barato es Juana" {
+    assert.equals(juana, empresa1.profesionalMasBarato())
+  }
+
+  test "Es Acotada" {
+    assert.that(empresa1.esDeGenteAcotada())
+  }
+
+  test "No es acotada cuando se le agregan 2 provincias a Luciana" {
+    luciana.agregarProvincia("Corrientes")
+    luciana.agregarProvincia("Misiones")
+    assert.notThat(empresa1.esDeGenteAcotada())
+  }
+}
+
